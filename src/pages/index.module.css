@@ -115,3 +115,25 @@
   height: 1em;
   margin-left: 0.5rem;
 }
+
+.board {
+  background-color: green;
+  width: 640px;
+  height: 640px;
+}
+
+.cell {
+  border: 1px solid black;
+  width: 80px;
+  height: 80px;
+  display: inline-flex;
+  vertical-align: top;
+}
+
+.disc {
+  width: 60px;
+  height: 60px;
+  background-color: #fff;
+  border-radius: 100%;
+  margin: auto;
+}
