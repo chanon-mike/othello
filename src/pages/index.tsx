@@ -26,6 +26,7 @@ const Home = () => {
     [-1, -1], // Up-Left
   ];
 
+  // Return true if move is valid, else false
   const isValidMove = (x: number, y: number, board: number[][]) => {
     if (
       x >= 0 &&
@@ -40,7 +41,7 @@ const Home = () => {
     return false;
   };
 
-  // Function to find if there are same color disc between new disc and another disc
+  // Return true if there are same color disc between new disc and another disc, else false
   const hasOccupiedLine = (x: number, y: number, dx: number, dy: number) => {
     let currentX = x;
     let currentY = y;
@@ -63,6 +64,7 @@ const Home = () => {
     }
   };
 
+  // Flip discs between line
   const flipDisc = (x: number, y: number, dx: number, dy: number, newBoard: number[][]) => {
     let currentX = x;
     let currentY = y;
@@ -74,8 +76,9 @@ const Home = () => {
     setplayerColor(2 / playerColor);
   };
 
+  // Calcualte each cell if the disc valid or not to display its possible move
   const calculateValidMove = () => {
-    const validMoves = [];
+    const validMoves: number[][] = [];
     console.log(board);
 
     // Loop through each cell in the board
@@ -96,7 +99,7 @@ const Home = () => {
       }
     }
 
-    console.log('Valid moves:', validMoves);
+    return validMoves;
   };
 
   const onClick = (x: number, y: number) => {
@@ -119,7 +122,8 @@ const Home = () => {
     setBoard(newBoard);
   };
 
-  calculateValidMove();
+  // Array of possible moves coordinates
+  const validMoves = calculateValidMove();
 
   return (
     <div className={styles.container}>
@@ -131,6 +135,13 @@ const Home = () => {
                 <div
                   className={styles.disc}
                   style={{ background: color === 1 ? '#000' : '#fff' }}
+                />
+              )}
+              {/* Display valid move */}
+              {validMoves.some(([vx, vy]) => vx === x && vy === y) && (
+                <div
+                  className={`${styles.disc} ${styles.valid}`}
+                  style={{ background: playerColor === 1 ? '#000' : '#fff' }}
                 />
               )}
             </div>
