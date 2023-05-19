@@ -2,7 +2,7 @@ import { useState } from 'react';
 import styles from './index.module.css';
 
 const Home = () => {
-  const [turnColor, setturnColor] = useState(1);
+  const [turnColor, setTurnColor] = useState(1);
 
   const [board, setBoard] = useState([
     [0, 0, 0, 0, 0, 0, 0, 0],
@@ -15,7 +15,6 @@ const Home = () => {
     [0, 0, 0, 0, 0, 0, 0, 0],
   ]);
 
-  // Direction from top, top left, middle left, ...
   const directions = [
     [-1, 0], // Up
     [-1, 1], // Up-Right
@@ -27,23 +26,58 @@ const Home = () => {
     [-1, -1], // Up-Left
   ];
 
+  // Function to find if there are same color disc between new disc and another disc
+  const findOccupiedLine = (x: number, y: number, dx: number, dy: number, board: number[][]) => {
+    let currentX = x;
+    let currentY = y;
+    while (
+      currentX >= 0 &&
+      currentX < board[y].length &&
+      currentY >= 0 &&
+      currentY < board[x].length
+    ) {
+      const currentDisc = board[currentY][currentX];
+
+      if (currentDisc === 0) {
+        return false;
+      } else if (currentDisc === turnColor) {
+        return true;
+      }
+
+      currentX += dx;
+      currentY += dy;
+    }
+  };
+
   const onClick = (x: number, y: number) => {
-    console.log(x, y);
     const newBoard: number[][] = JSON.parse(JSON.stringify(board));
 
-    // there is at least one straight (horizontal, vertical, or diagonal) occupied line between the new disc and another disc
     directions.forEach((direction) => {
+      const [dx, dy] = direction;
+      const newX = x + dx;
+      const newY = y + dy;
+
+      // Check If new disc is in whole board, checking direction disc is not empty and not the same color if there is a disc
       if (
-        board[y + 1] !== undefined &&
-        board[y + direction[0]][x + direction[1]] !== 0 &&
-        board[y + direction[0]][x + direction[1]] !== turnColor
+        newX >= 0 &&
+        newX < board[y].length &&
+        newY >= 0 &&
+        newY < board.length &&
+        board[newY][newX] !== 0 &&
+        board[newY][newX] !== turnColor
       ) {
-        newBoard[y + direction[0]][x + direction[1]] = turnColor;
-        newBoard[y][x] = turnColor;
-        // setturnColor(turnColor === 1 ? 2 : 1);
-        setturnColor(2 / turnColor);
+        // If there are another same color disc in the straight line, flip all opponent disc in that line
+        if (findOccupiedLine(newX, newY, dx, dy, board)) {
+          let currentX = x;
+          let currentY = y;
+          while (board[currentY][currentX] !== turnColor) {
+            newBoard[currentY][currentX] = turnColor;
+            currentX += dx;
+            currentY += dy;
+          }
+          setTurnColor(2 / turnColor);
+        }
       }
-      console.log(direction);
     });
 
     setBoard(newBoard);
