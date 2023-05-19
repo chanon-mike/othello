@@ -137,3 +137,7 @@
   border-radius: 100%;
   margin: auto;
 }
+
+.possible {
+  opacity: 0.5;
+}

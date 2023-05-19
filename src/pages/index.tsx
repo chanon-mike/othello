@@ -2,7 +2,7 @@ import { useState } from 'react';
 import styles from './index.module.css';
 
 const Home = () => {
-  const [turnColor, setTurnColor] = useState(1);
+  const [playerColor, setplayerColor] = useState(1);
 
   const [board, setBoard] = useState([
     [0, 0, 0, 0, 0, 0, 0, 0],
@@ -26,27 +26,77 @@ const Home = () => {
     [-1, -1], // Up-Left
   ];
 
+  const isValidMove = (x: number, y: number, board: number[][]) => {
+    if (
+      x >= 0 &&
+      x < board[0].length &&
+      y >= 0 &&
+      y < board.length &&
+      board[y][x] !== 0 &&
+      board[y][x] !== playerColor
+    )
+      return true;
+
+    return false;
+  };
+
   // Function to find if there are same color disc between new disc and another disc
-  const findOccupiedLine = (x: number, y: number, dx: number, dy: number, board: number[][]) => {
+  const hasOccupiedLine = (x: number, y: number, dx: number, dy: number) => {
     let currentX = x;
     let currentY = y;
     while (
       currentX >= 0 &&
-      currentX < board[y].length &&
+      currentX < board[0].length &&
       currentY >= 0 &&
-      currentY < board[x].length
+      currentY < board.length
     ) {
       const currentDisc = board[currentY][currentX];
 
       if (currentDisc === 0) {
         return false;
-      } else if (currentDisc === turnColor) {
+      } else if (currentDisc === playerColor) {
         return true;
       }
 
       currentX += dx;
       currentY += dy;
     }
+  };
+
+  const flipDisc = (x: number, y: number, dx: number, dy: number, newBoard: number[][]) => {
+    let currentX = x;
+    let currentY = y;
+    while (board[currentY][currentX] !== playerColor) {
+      newBoard[currentY][currentX] = playerColor;
+      currentX += dx;
+      currentY += dy;
+    }
+    setplayerColor(2 / playerColor);
+  };
+
+  const calculateValidMove = () => {
+    const validMoves = [];
+    console.log(board);
+
+    // Loop through each cell in the board
+    for (let y = 0; y < board.length; y++) {
+      for (let x = 0; x < board[y].length; x++) {
+        if (board[y][x] === 0) {
+          // Check for the valid move condition (same as in onClick), if true, push a value in validMoves
+          directions.forEach((direction) => {
+            const [dx, dy] = direction;
+            const newX = x + dx;
+            const newY = y + dy;
+
+            if (isValidMove(newX, newY, board) && hasOccupiedLine(newX, newY, dx, dy)) {
+              validMoves.push([x, y]);
+            }
+          });
+        }
+      }
+    }
+
+    console.log('Valid moves:', validMoves);
   };
 
   const onClick = (x: number, y: number) => {
@@ -58,30 +108,18 @@ const Home = () => {
       const newY = y + dy;
 
       // Check If new disc is in whole board, checking direction disc is not empty and not the same color if there is a disc
-      if (
-        newX >= 0 &&
-        newX < board[y].length &&
-        newY >= 0 &&
-        newY < board.length &&
-        board[newY][newX] !== 0 &&
-        board[newY][newX] !== turnColor
-      ) {
+      if (isValidMove(newX, newY, newBoard)) {
         // If there are another same color disc in the straight line, flip all opponent disc in that line
-        if (findOccupiedLine(newX, newY, dx, dy, board)) {
-          let currentX = x;
-          let currentY = y;
-          while (board[currentY][currentX] !== turnColor) {
-            newBoard[currentY][currentX] = turnColor;
-            currentX += dx;
-            currentY += dy;
-          }
-          setTurnColor(2 / turnColor);
+        if (hasOccupiedLine(newX, newY, dx, dy)) {
+          flipDisc(x, y, dx, dy, newBoard);
         }
       }
     });
 
     setBoard(newBoard);
   };
+
+  calculateValidMove();
 
   return (
     <div className={styles.container}>
