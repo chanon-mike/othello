@@ -4,6 +4,8 @@ import styles from './index.module.css';
 const Home = () => {
   const [playerColor, setplayerColor] = useState(1);
 
+  const [latestMove, setLatestMove] = useState([0, 0]);
+
   const [board, setBoard] = useState([
     [0, 0, 0, 0, 0, 0, 0, 0],
     [0, 0, 0, 0, 0, 0, 0, 0],
@@ -79,7 +81,6 @@ const Home = () => {
   // Calcualte each cell if the disc valid or not to display its possible move
   const calculateValidMove = () => {
     const validMoves: number[][] = [];
-    console.log(board);
 
     // Loop through each cell in the board
     for (let y = 0; y < board.length; y++) {
@@ -114,6 +115,7 @@ const Home = () => {
       if (isValidMove(newX, newY, newBoard)) {
         // If there are another same color disc in the straight line, flip all opponent disc in that line
         if (hasOccupiedLine(newX, newY, dx, dy)) {
+          setLatestMove([x, y]);
           flipDisc(x, y, dx, dy, newBoard);
         }
       }
@@ -132,14 +134,14 @@ const Home = () => {
           row.map((color, x) => (
             <div className={styles.cell} key={`${x}-${y}`} onClick={() => onClick(x, y)}>
               {color !== 0 && (
-                <div
-                  className={styles.disc}
-                  style={{ background: color === 1 ? '#000' : '#fff' }}
-                />
+                <div className={styles.disc} style={{ background: color === 1 ? '#000' : '#fff' }}>
+                  {latestMove[0] === x && latestMove[1] === y && <div className={styles.current} />}
+                </div>
               )}
+
               {/* Display valid move */}
               {validMoves.some(([vx, vy]) => vx === x && vy === y) && (
-                <div
+                <span
                   className={`${styles.disc} ${styles.valid}`}
                   style={{ background: playerColor === 1 ? '#000' : '#fff' }}
                 />

@@ -123,7 +123,7 @@
 }
 
 .cell {
-  border: 1px solid black;
+  border: 1px solid #000;
   width: 80px;
   height: 80px;
   display: inline-flex;
@@ -136,8 +136,17 @@
   background-color: #fff;
   border-radius: 100%;
   margin: auto;
+  display: flex;
 }
 
 .valid {
   opacity: 0.5;
+}
+
+.current {
+  height: 5px;
+  width: 5px;
+  background-color: #f00;
+  border-radius: 100%;
+  margin: auto;
 }
