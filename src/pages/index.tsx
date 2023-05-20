@@ -106,20 +106,22 @@ const Home = () => {
   const onClick = (x: number, y: number) => {
     const newBoard: number[][] = JSON.parse(JSON.stringify(board));
 
-    directions.forEach((direction) => {
-      const [dx, dy] = direction;
-      const newX = x + dx;
-      const newY = y + dy;
+    if (newBoard[y][x] === 0) {
+      directions.forEach((direction) => {
+        const [dx, dy] = direction;
+        const newX = x + dx;
+        const newY = y + dy;
 
-      // Check If new disc is in whole board, checking direction disc is not empty and not the same color if there is a disc
-      if (isValidMove(newX, newY, newBoard)) {
-        // If there are another same color disc in the straight line, flip all opponent disc in that line
-        if (hasOccupiedLine(newX, newY, dx, dy)) {
-          setLatestMove([x, y]);
-          flipDisc(x, y, dx, dy, newBoard);
+        // Check If new disc is in whole board, checking direction disc is not empty and not the same color if there is a disc
+        if (isValidMove(newX, newY, newBoard)) {
+          // If there are another same color disc in the straight line, flip all opponent disc in that line
+          if (hasOccupiedLine(newX, newY, dx, dy)) {
+            setLatestMove([x, y]);
+            flipDisc(x, y, dx, dy, newBoard);
+          }
         }
-      }
-    });
+      });
+    }
 
     setBoard(newBoard);
   };
@@ -138,7 +140,6 @@ const Home = () => {
                   {latestMove[0] === x && latestMove[1] === y && <div className={styles.current} />}
                 </div>
               )}
-
               {/* Display valid move */}
               {validMoves.some(([vx, vy]) => vx === x && vy === y) && (
                 <span
