@@ -1,3 +1,4 @@
+/* stylelint-disable selector-class-pattern */
 .container {
   display: flex;
   flex-direction: column;
@@ -6,6 +7,7 @@
   height: 100vh;
   min-height: 100vh;
   padding: 0 0.5rem;
+  background-color: #222;
 }
 
 .main {
@@ -116,8 +118,9 @@
   margin-left: 0.5rem;
 }
 
+/* -- Board, cell and disc -- */
 .board {
-  background-color: green;
+  background-color: #078846;
   width: 640px;
   height: 640px;
 }
@@ -131,9 +134,10 @@
 }
 
 .disc {
-  width: 60px;
-  height: 60px;
-  background-color: #fff;
+  width: 4rem;
+  height: 4rem;
+  background-color: #000;
+  border: 1px solid #303030;
   border-radius: 100%;
   margin: auto;
   display: flex;
@@ -141,6 +145,10 @@
 
 .valid {
   opacity: 0.5;
+  border: 1px solid #303030;
+  outline: 1px solid #303030;
+  outline-offset: -0.3rem;
+  background-color: transparent;
 }
 
 .current {
@@ -149,4 +157,25 @@
   background-color: #f00;
   border-radius: 100%;
   margin: auto;
+}
+
+/* -- Score display -- */
+.row {
+  display: flex;
+}
+
+.scoreBorder {
+  width: 110px;
+  height: 100px;
+  background-color: #303030;
+  padding: 0.5rem;
+  margin: 0 0.3rem;
+  display: flex;
+  color: #fff;
+  font-size: 1rem;
+  font-family: cursive;
+}
+
+.scoreBorder.bottom {
+  margin-top: auto;
 }

@@ -78,6 +78,24 @@ const Home = () => {
     setplayerColor(2 / playerColor);
   };
 
+  // Calculate score for black and whtie
+  const calculateScore = () => {
+    let blackScore = 0;
+    let whiteScore = 0;
+
+    for (let y = 0; y < board.length; y++) {
+      for (let x = 0; x < board[y].length; x++) {
+        if (board[y][x] === 1) {
+          blackScore += 1;
+        } else if (board[y][x] === 2) {
+          whiteScore += 1;
+        }
+      }
+    }
+
+    return [blackScore, whiteScore];
+  };
+
   // Calcualte each cell if the disc valid or not to display its possible move
   const calculateValidMove = () => {
     const validMoves: number[][] = [];
@@ -128,28 +146,42 @@ const Home = () => {
 
   // Array of possible moves coordinates
   const validMoves = calculateValidMove();
+  const score = calculateScore();
 
   return (
     <div className={styles.container}>
-      <div className={styles.board}>
-        {board.map((row, y) =>
-          row.map((color, x) => (
-            <div className={styles.cell} key={`${x}-${y}`} onClick={() => onClick(x, y)}>
-              {color !== 0 && (
-                <div className={styles.disc} style={{ background: color === 1 ? '#000' : '#fff' }}>
-                  {latestMove[0] === x && latestMove[1] === y && <div className={styles.current} />}
-                </div>
-              )}
-              {/* Display valid move */}
-              {validMoves.some(([vx, vy]) => vx === x && vy === y) && (
-                <span
-                  className={`${styles.disc} ${styles.valid}`}
-                  style={{ background: playerColor === 1 ? '#000' : '#fff' }}
-                />
-              )}
-            </div>
-          ))
-        )}
+      <div className={styles.row}>
+        <div className={styles.scoreBorder}>
+          <div className={styles.disc} style={{ backgroundColor: '#000' }} /> x{score[0]}
+        </div>
+
+        <div className={styles.board}>
+          {board.map((row, y) =>
+            row.map((color, x) => (
+              <div className={styles.cell} key={`${x}-${y}`} onClick={() => onClick(x, y)}>
+                {color !== 0 && (
+                  <div
+                    className={styles.disc}
+                    style={{ background: color === 1 ? '#000' : '#fff' }}
+                  >
+                    {/* Show a mark of latest move in the middle of a disc */}
+                    {latestMove[0] === x && latestMove[1] === y && (
+                      <div className={styles.current} />
+                    )}
+                  </div>
+                )}
+                {/* Display valid move */}
+                {validMoves.some(([vx, vy]) => vx === x && vy === y) && (
+                  <span className={`${styles.disc} ${styles.valid}`} />
+                )}
+              </div>
+            ))
+          )}
+        </div>
+
+        <div className={`${styles.scoreBorder} ${styles.bottom}`}>
+          <div className={styles.disc} style={{ backgroundColor: '#fff' }} /> x{score[1]}
+        </div>
       </div>
     </div>
   );
