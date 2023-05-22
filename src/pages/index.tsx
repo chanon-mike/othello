@@ -156,7 +156,7 @@ const Home = () => {
   const score = calculateScore();
   const validMoves = calculateValidMove(playerColor);
   const opponentValidMoves = calculateValidMove(2 / playerColor);
-  const doesGameEnd = !(validMoves.length && opponentValidMoves.length);
+  const doesGameEnd = !validMoves.length && !opponentValidMoves.length;
 
   return (
     <div className={styles.container}>
@@ -195,29 +195,33 @@ const Home = () => {
         {/* No moves left for a player */}
         {!validMoves.length && !doesGameEnd && (
           <div className={styles.modal}>
-            <button className="close" onClick={() => setplayerColor(2 / playerColor)}>
-              &times;
-            </button>
             <div
               className={styles.disc}
-              style={playerColor ? { backgroundColor: '#000' } : { backgroundColor: '#fff' }}
+              style={playerColor === 1 ? { backgroundColor: '#000' } : { backgroundColor: '#fff' }}
             />
-            NO MORE MOVES
+            <p className={styles.modalContent}>NO MORE MOVES</p>
+            <a className={styles.close} onClick={() => setplayerColor(2 / playerColor)}>
+              Close
+            </a>
           </div>
         )}
-        {/* When all disc are filled, or no more move available for both sides */}
+        {/* When all cell are filled, or no more move available for both sides */}
         {doesGameEnd && (
           <div className={styles.modal}>
-            <div className={styles.disc} style={{ backgroundColor: '#000' }} /> x{score[0]}
-            <div className={styles.disc} style={{ backgroundColor: '#fff' }} /> x{score[1]}
+            <div className={styles.row}>
+              <div className={styles.disc} style={{ backgroundColor: '#000' }} />{' '}
+              <span className={styles.modalContent}>x{score[0]}</span>
+              <div className={styles.disc} style={{ backgroundColor: '#fff' }} />{' '}
+              <span className={styles.modalContent}>x{score[1]}</span>
+            </div>
             <p>{score[0] > score[1] ? 'BLACK WIN' : score[0] < score[1] ? 'WHITE WIN' : 'TIE'}</p>
-            <button className="close" onClick={() => setBoard(initialBoard)}>
+            <a className={styles.close} onClick={() => setBoard(initialBoard)}>
               Restart
-            </button>
+            </a>
           </div>
         )}
 
-        <div className={`${styles.scoreBorder} ${styles.bottom}`}>
+        <div className={styles.scoreBorder}>
           <div className={styles.disc} style={{ backgroundColor: '#fff' }} /> x{score[1]}
         </div>
       </div>

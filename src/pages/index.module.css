@@ -8,6 +8,7 @@
   min-height: 100vh;
   padding: 0 0.5rem;
   background-color: #222;
+  font-family: cursive;
 }
 
 .main {
@@ -161,6 +162,10 @@
 /* -- Score display -- */
 .row {
   display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  user-select: none;
 }
 
 .scoreBorder {
@@ -172,33 +177,33 @@
   display: flex;
   color: #fff;
   font-size: 1rem;
-  font-family: cursive;
+  border-radius: 5%;
 }
 
-.scoreBorder.bottom {
-  margin-top: auto;
-}
-
+/* Popup box */
 .modal {
-  position: fixed; /* Stay in place */
-  z-index: 1; /* Sit on top */
-  width: 480px; /* Full width */
-  height: 480px; /* Full height */
-  margin: auto;
-  background-color: rgb(0 0 0); /* Fallback color */
-  background-color: rgb(0 0 0 / 40%); /* Black w/ opacity */
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 300px;
+  padding: 20px;
+  background-color: rgb(0 0 0 / 95%);
+  border: 1px solid #303030;
+  border-radius: 5%;
+  text-align: center;
+  color: #fff;
+}
+
+.modalContent {
+  font-size: 1rem;
+  width: 100%;
 }
 
 .close {
+  background-color: #fff;
+  color: #000;
+  padding: 5px 20px;
+  border-radius: 5%;
   cursor: pointer;
-  color: #aaa;
-  float: right;
-  font-size: 28px;
-  font-weight: bold;
-}
-
-.noValidMoveDisplay {
-}
-
-.resultDisplay {
 }
