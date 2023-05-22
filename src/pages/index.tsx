@@ -3,9 +3,7 @@ import styles from './index.module.css';
 
 const Home = () => {
   const [playerColor, setplayerColor] = useState(1);
-
   const [latestMove, setLatestMove] = useState([0, 0]);
-
   const [board, setBoard] = useState([
     [0, 0, 0, 0, 0, 0, 0, 0],
     [0, 0, 0, 0, 0, 0, 0, 0],
@@ -17,6 +15,16 @@ const Home = () => {
     [0, 0, 0, 0, 0, 0, 0, 0],
   ]);
 
+  const initialBoard = [
+    [0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 1, 2, 0, 0, 0],
+    [0, 0, 0, 2, 1, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0],
+  ];
   const directions = [
     [-1, 0], // Up
     [-1, 1], // Up-Right
@@ -29,40 +37,43 @@ const Home = () => {
   ];
 
   // Return true if move is valid, else false
-  const isValidMove = (x: number, y: number, board: number[][]) => {
+  const isValidMove = (
+    x: number,
+    y: number,
+    dx: number,
+    dy: number,
+    board: number[][],
+    turnColor: number
+  ) => {
     if (
       x >= 0 &&
       x < board[0].length &&
       y >= 0 &&
       y < board.length &&
       board[y][x] !== 0 &&
-      board[y][x] !== playerColor
-    )
-      return true;
-
-    return false;
-  };
-
-  // Return true if there are same color disc between new disc and another disc, else false
-  const hasOccupiedLine = (x: number, y: number, dx: number, dy: number) => {
-    let currentX = x;
-    let currentY = y;
-    while (
-      currentX >= 0 &&
-      currentX < board[0].length &&
-      currentY >= 0 &&
-      currentY < board.length
+      board[y][x] !== turnColor
     ) {
-      const currentDisc = board[currentY][currentX];
+      // Return true if there are same color disc between new disc and another disc, else false
+      let currentX = x;
+      let currentY = y;
 
-      if (currentDisc === 0) {
-        return false;
-      } else if (currentDisc === playerColor) {
-        return true;
+      while (
+        currentX >= 0 &&
+        currentX < board[0].length &&
+        currentY >= 0 &&
+        currentY < board.length
+      ) {
+        const currentDisc = board[currentY][currentX];
+
+        if (currentDisc === 0) {
+          return false;
+        } else if (currentDisc === turnColor) {
+          return true;
+        }
+
+        currentX += dx;
+        currentY += dy;
       }
-
-      currentX += dx;
-      currentY += dy;
     }
   };
 
@@ -96,8 +107,8 @@ const Home = () => {
     return [blackScore, whiteScore];
   };
 
-  // Calcualte each cell if the disc valid or not to display its possible move
-  const calculateValidMove = () => {
+  // Calculate each cell if the disc valid or not to display its possible move
+  const calculateValidMove = (turnColor: number) => {
     const validMoves: number[][] = [];
 
     // Loop through each cell in the board
@@ -110,7 +121,7 @@ const Home = () => {
             const newX = x + dx;
             const newY = y + dy;
 
-            if (isValidMove(newX, newY, board) && hasOccupiedLine(newX, newY, dx, dy)) {
+            if (isValidMove(newX, newY, dx, dy, board, turnColor)) {
               validMoves.push([x, y]);
             }
           });
@@ -131,12 +142,9 @@ const Home = () => {
         const newY = y + dy;
 
         // Check If new disc is in whole board, checking direction disc is not empty and not the same color if there is a disc
-        if (isValidMove(newX, newY, newBoard)) {
-          // If there are another same color disc in the straight line, flip all opponent disc in that line
-          if (hasOccupiedLine(newX, newY, dx, dy)) {
-            setLatestMove([x, y]);
-            flipDisc(x, y, dx, dy, newBoard);
-          }
+        if (isValidMove(newX, newY, dx, dy, newBoard, playerColor)) {
+          setLatestMove([x, y]);
+          flipDisc(x, y, dx, dy, newBoard);
         }
       });
     }
@@ -145,8 +153,10 @@ const Home = () => {
   };
 
   // Array of possible moves coordinates
-  const validMoves = calculateValidMove();
   const score = calculateScore();
+  const validMoves = calculateValidMove(playerColor);
+  const opponentValidMoves = calculateValidMove(2 / playerColor);
+  const doesGameEnd = !(validMoves.length && opponentValidMoves.length);
 
   return (
     <div className={styles.container}>
@@ -156,9 +166,11 @@ const Home = () => {
         </div>
 
         <div className={styles.board}>
+          {/* Display a board */}
           {board.map((row, y) =>
             row.map((color, x) => (
               <div className={styles.cell} key={`${x}-${y}`} onClick={() => onClick(x, y)}>
+                {/* Place a disc */}
                 {color !== 0 && (
                   <div
                     className={styles.disc}
@@ -170,6 +182,7 @@ const Home = () => {
                     )}
                   </div>
                 )}
+
                 {/* Display valid move */}
                 {validMoves.some(([vx, vy]) => vx === x && vy === y) && (
                   <span className={`${styles.disc} ${styles.valid}`} />
@@ -178,6 +191,31 @@ const Home = () => {
             ))
           )}
         </div>
+
+        {/* No moves left for a player */}
+        {!validMoves.length && !doesGameEnd && (
+          <div className={styles.modal}>
+            <button className="close" onClick={() => setplayerColor(2 / playerColor)}>
+              &times;
+            </button>
+            <div
+              className={styles.disc}
+              style={playerColor ? { backgroundColor: '#000' } : { backgroundColor: '#fff' }}
+            />
+            NO MORE MOVES
+          </div>
+        )}
+        {/* When all disc are filled, or no more move available for both sides */}
+        {doesGameEnd && (
+          <div className={styles.modal}>
+            <div className={styles.disc} style={{ backgroundColor: '#000' }} /> x{score[0]}
+            <div className={styles.disc} style={{ backgroundColor: '#fff' }} /> x{score[1]}
+            <p>{score[0] > score[1] ? 'BLACK WIN' : score[0] < score[1] ? 'WHITE WIN' : 'TIE'}</p>
+            <button className="close" onClick={() => setBoard(initialBoard)}>
+              Restart
+            </button>
+          </div>
+        )}
 
         <div className={`${styles.scoreBorder} ${styles.bottom}`}>
           <div className={styles.disc} style={{ backgroundColor: '#fff' }} /> x{score[1]}
