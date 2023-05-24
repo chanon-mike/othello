@@ -162,7 +162,8 @@ const Home = () => {
     <div className={styles.container}>
       <div className={styles.row}>
         <div className={styles.scoreBorder}>
-          <div className={styles.disc} style={{ backgroundColor: '#000' }} /> x{score[0]}
+          <div className={styles.disc} style={{ backgroundColor: '#000' }} />{' '}
+          <span className={styles.score}>x{score[0]}</span>
         </div>
 
         <div className={styles.board}>
@@ -222,7 +223,8 @@ const Home = () => {
         )}
 
         <div className={styles.scoreBorder}>
-          <div className={styles.disc} style={{ backgroundColor: '#fff' }} /> x{score[1]}
+          <div className={styles.disc} style={{ backgroundColor: '#fff' }} />{' '}
+          <span className={styles.score}>x{score[0]}</span>
         </div>
       </div>
     </div>
