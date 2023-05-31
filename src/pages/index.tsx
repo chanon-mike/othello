@@ -224,7 +224,7 @@ const Home = () => {
 
         <div className={styles.scoreBorder}>
           <div className={styles.disc} style={{ backgroundColor: '#fff' }} />{' '}
-          <span className={styles.score}>x{score[0]}</span>
+          <span className={styles.score}>x{score[1]}</span>
         </div>
       </div>
     </div>
