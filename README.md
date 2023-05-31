@@ -1,3 +1,11 @@
+# Othello 
+Simple othello game made by TypeScript, made with responsive in mind.
+
+GitHub page: [https://chanon-mike.github.io/othello/](https://chanon-mike.github.io/othello/)
+
+![othello_image](https://github.com/chanon-mike/othello/assets/27944646/10ce8a47-17a0-4fea-bc52-e92c4a4798e7)
+
+
 This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
 
 ## Getting Started
